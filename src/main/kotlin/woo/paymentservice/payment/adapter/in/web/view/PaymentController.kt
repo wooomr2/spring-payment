@@ -2,9 +2,8 @@ package woo.paymentservice.payment.adapter.`in`.web.view
 
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.RequestMapping
 import reactor.core.publisher.Mono
-import woo.paymentservice.common.WebAdapter
+import woo.paymentservice.common.annotation.WebAdapter
 
 @WebAdapter
 @Controller

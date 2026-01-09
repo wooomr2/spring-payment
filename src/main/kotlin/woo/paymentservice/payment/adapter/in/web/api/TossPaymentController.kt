@@ -7,10 +7,10 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import reactor.core.publisher.Mono
-import woo.paymentservice.common.WebAdapter
+import woo.paymentservice.common.annotation.WebAdapter
 import woo.paymentservice.payment.adapter.`in`.web.request.TossPaymentConfirmRequest
 import woo.paymentservice.payment.adapter.`in`.web.response.ApiResponse
-import woo.paymentservice.payment.adapter.out.web.executor.TossPaymentExecutor
+import woo.paymentservice.payment.adapter.out.web.toss.executor.TossPaymentExecutor
 
 @WebAdapter
 @RequestMapping("/v1/toss")
