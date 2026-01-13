@@ -7,6 +7,14 @@ spring:
   thymeleaf:
     cache: false
 
+logging:
+  level:
+    org:
+      springframework:
+        web: DEBUG
+        r2dbc: DEBUG
+        transaction: DEBUG
+
 PSP:
   toss:
     secretKey: test_gsk_docs_OaPz8L5KdmQXkzRz3y47BMw6

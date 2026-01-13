@@ -10,22 +10,28 @@ import reactor.core.publisher.Mono
 import woo.paymentservice.common.annotation.WebAdapter
 import woo.paymentservice.payment.adapter.`in`.web.request.TossPaymentConfirmRequest
 import woo.paymentservice.payment.adapter.`in`.web.response.ApiResponse
-import woo.paymentservice.payment.adapter.out.web.toss.executor.TossPaymentExecutor
+import woo.paymentservice.payment.application.port.`in`.PaymentConfirmCommand
+import woo.paymentservice.payment.application.port.`in`.PaymentConfirmUseCase
+import woo.paymentservice.payment.domain.PaymentConfirmResult
 
 @WebAdapter
 @RequestMapping("/v1/toss")
 @RestController
 class TossPaymentController(
-    private val tossPaymentExecutor: TossPaymentExecutor
+    private val paymentConfirmUseCase: PaymentConfirmUseCase
 ) {
 
     @PostMapping("/confirm")
-    fun confirm(@RequestBody request: TossPaymentConfirmRequest): Mono<ResponseEntity<ApiResponse<String>>> {
-        return tossPaymentExecutor.execute(request).map {
-            ResponseEntity.ok().body(
-                ApiResponse.with(HttpStatus.OK, "ok", it)
-            )
-        }
+    fun confirm(@RequestBody request: TossPaymentConfirmRequest): Mono<ResponseEntity<ApiResponse<PaymentConfirmResult>>> {
+
+        val command = PaymentConfirmCommand(
+            paymentKey = request.paymentKey,
+            orderId = request.orderId,
+            amount = request.amount
+        )
+
+        return paymentConfirmUseCase.confirm(command)
+            .map { ResponseEntity.ok().body(ApiResponse.with(HttpStatus.OK, "", it)) }
     }
 }
 

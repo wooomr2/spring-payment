@@ -1,10 +1,11 @@
-package woo.paymentservice.payment.adapter.out.persistent.repository
+package woo.paymentservice.payment.adapter.out.persistent.repository.r2dbc
 
 import org.springframework.r2dbc.core.DatabaseClient
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.reactive.TransactionalOperator
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
+import woo.paymentservice.payment.adapter.out.persistent.repository.PaymentRepository
 import woo.paymentservice.payment.domain.PaymentEvent
 import java.math.BigInteger
 
@@ -38,6 +39,7 @@ class R2DBCPaymentRepository(
 
     private fun insertPaymentOrders(paymentEvent: PaymentEvent, paymentEventId: Long): Mono<Long> {
 
+        // TODO("BULK INSERT로 변경 필요")
         val inserts: List<Mono<Long>> = paymentEvent.paymentOrders.map { paymentOrder ->
             databaseClient.sql(INSERT_PAYMENT_ORDER_QUERY)
                 .bind("paymentEventId", paymentEventId)
@@ -64,7 +66,7 @@ class R2DBCPaymentRepository(
         """.trimIndent()
 
         val INSERT_PAYMENT_ORDER_QUERY = """
-            INSERT INTO payment_orders(payment_event_id, seller_id, order_id, product_id, amount, payment_status)
+            INSERT INTO payment_orders(payment_event_id, seller_id, order_id, product_id, amount, payment_order_status)
             VALUES (:paymentEventId, :sellerId, :orderId, :productId, :amount, :paymentStatus)
         """.trimIndent()
     }

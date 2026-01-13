@@ -5,7 +5,7 @@ enum class PaymentStatus(description: String) {
     EXECUTING("결제 승인 중"),
     SUCCESS("결제승인 완료"),
     FAILURE("결제승인 실패"),
-    UNKNWON("결제 승인 완료"),
+    UNKNOWN("결제 승인 완료"),
     ;
 
     companion object {
