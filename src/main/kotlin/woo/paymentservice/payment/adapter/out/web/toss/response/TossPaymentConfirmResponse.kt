@@ -1,5 +1,7 @@
 package woo.paymentservice.payment.adapter.out.web.toss.response
 
+import woo.paymentservice.payment.domain.PaymentFailure
+
 
 data class TossPaymentConfirmResponse(
     val version: String,
@@ -35,7 +37,7 @@ data class TossPaymentConfirmResponse(
     val checkout: Checkout?,
     val easyPay: EasyPay?,
     val country: String,
-    val failure: PaymentExecutionFailure?,
+    val failure: PaymentFailure?,
     val cashReceipt: CashReceipt?,
     val cashReceipts: List<CashReceipt>?,
     val discount: Discount?,
@@ -120,11 +122,6 @@ data class EasyPay(
     val provider: String,
     val amount: Long,
     val discountAmount: Long
-)
-
-data class PaymentExecutionFailure(
-    val code: String,
-    val message: String
 )
 
 data class Receipt(

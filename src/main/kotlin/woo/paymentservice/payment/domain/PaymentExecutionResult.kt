@@ -1,13 +1,12 @@
 package woo.paymentservice.payment.domain
 
-import woo.paymentservice.payment.adapter.out.web.toss.response.PaymentExecutionFailure
 import java.time.LocalDateTime
 
 data class PaymentExecutionResult(
     val paymentKey: String,
     val orderId: String,
     val extraDetails: PaymentExtraDetails? = null,
-    val failure: PaymentExecutionFailure? = null,
+    val failure: PaymentFailure? = null,
     val isSuccess: Boolean,
     val isFailure: Boolean,
     val isUnknown: Boolean,

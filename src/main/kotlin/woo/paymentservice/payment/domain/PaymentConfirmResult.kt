@@ -1,10 +1,9 @@
 package woo.paymentservice.payment.domain
 
-import woo.paymentservice.payment.adapter.out.web.toss.response.PaymentExecutionFailure
 
 data class PaymentConfirmResult(
     val status: PaymentStatus,
-    val failure: PaymentExecutionFailure? = null
+    val failure: PaymentFailure? = null
 ) {
     init {
         if (status == PaymentStatus.FAILURE) {

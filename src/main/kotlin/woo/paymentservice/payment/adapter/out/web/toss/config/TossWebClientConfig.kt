@@ -1,5 +1,6 @@
 package woo.paymentservice.payment.adapter.out.web.toss.config
 
+import io.netty.handler.timeout.ReadTimeoutHandler
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -11,11 +12,12 @@ import org.springframework.web.reactive.function.client.WebClient
 import reactor.netty.http.client.HttpClient
 import reactor.netty.resources.ConnectionProvider
 import java.util.*
+import java.util.concurrent.TimeUnit
 
 @Configuration
 class TossWebClientConfig(
-    @Value($$"${PSP.toss.url}") private val baseUrl: String,
-    @Value($$"${PSP.toss.secretKey}") private val secretKey: String
+    @Value("\${PSP.toss.url}") private val baseUrl: String,
+    @Value("\${PSP.toss.secretKey}") private val secretKey: String
 ) {
 
     @Bean
@@ -35,6 +37,9 @@ class TossWebClientConfig(
         // Reactor Netty는 기본 global pool을 쓰기 떄문에 다른 서비스와 커넥션 공유. 전용 Connection Pool 생성
         val provider = ConnectionProvider.builder("toss-payment").build()
 
-        return ReactorClientHttpConnector(HttpClient.create(provider))
+        val clientBase = HttpClient.create(provider)
+            .doOnConnected { it.addHandlerLast(ReadTimeoutHandler(30, TimeUnit.SECONDS)) }
+
+        return ReactorClientHttpConnector(clientBase)
     }
 }

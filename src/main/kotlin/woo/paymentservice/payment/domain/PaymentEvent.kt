@@ -14,11 +14,24 @@ data class PaymentEvent(
     val paymentOrders: List<PaymentOrder> = emptyList(),
     private var isPaymentDone: Boolean = false,
 ) {
+
     fun totalAmount(): Long {
         return paymentOrders.sumOf { it.amount }.toLong()
     }
 
     fun isPaymentDone(): Boolean {
         return isPaymentDone
+    }
+
+    fun isSuccess(): Boolean {
+        return paymentOrders.all { it.paymentStatus == PaymentStatus.SUCCESS }
+    }
+
+    fun isFailure(): Boolean {
+        return paymentOrders.all { it.paymentStatus == PaymentStatus.FAILURE }
+    }
+
+    fun isUnknown(): Boolean {
+        return paymentOrders.all { it.paymentStatus == PaymentStatus.UNKNOWN }
     }
 }

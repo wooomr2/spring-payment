@@ -2,8 +2,9 @@ package woo.paymentservice.payment.domain
 
 /**
  * 결제수단입니다. 카드, 가상계좌, 간편결제, 휴대폰, 계좌이체, 문화상품권, 도서문화상품권, 게임문화상품권 중 하나입니다.
+ * DB는 영문저장. Toss Result는 한글로 내려옴. korMethod도 Unique해야함
  * */
-enum class PaymentMethod(val korMethodName: String) {
+enum class PaymentMethod(val korMethod: String) {
     CARD("카드"),
     VIRTUAL("가상계좌"),
     EASY_PAY("간편결제"),
@@ -16,7 +17,8 @@ enum class PaymentMethod(val korMethodName: String) {
 
     companion object {
         fun get(method: String): PaymentMethod {
-            return entries.find { it.korMethodName == method } ?: error("PaymentMethod($method)을 찾을 수 없습니다.")
+            return entries.find { (it.name == method || it.korMethod == method) }
+                ?: error("PaymentMethod($method)을 찾을 수 없습니다.")
         }
     }
 }

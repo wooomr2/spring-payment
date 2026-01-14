@@ -14,11 +14,11 @@ import reactor.test.StepVerifier
 import woo.paymentservice.payment.application.port.`in`.CheckoutCommand
 import woo.paymentservice.payment.application.port.`in`.CheckoutUseCase
 import woo.paymentservice.payment.test.PaymentDatabaseHelper
-import woo.paymentservice.payment.test.PaymentTestConfiguration
+import woo.paymentservice.payment.test.PaymentTestConfig
 import java.util.*
 
 @SpringBootTest
-@Import(PaymentTestConfiguration::class)
+@Import(PaymentTestConfig::class)
 class CheckoutServiceTest(
     @Autowired private val checkoutUseCase: CheckoutUseCase,
     @Autowired private val paymentDatabaseHelper: PaymentDatabaseHelper,

@@ -1,7 +1,7 @@
 package woo.paymentservice.payment.application.port.out
 
-import woo.paymentservice.payment.adapter.out.web.toss.response.PaymentExecutionFailure
 import woo.paymentservice.payment.domain.PaymentExtraDetails
+import woo.paymentservice.payment.domain.PaymentFailure
 import woo.paymentservice.payment.domain.PaymentStatus
 
 data class PaymentStatusUpdateCommand(
@@ -9,7 +9,7 @@ data class PaymentStatusUpdateCommand(
     val orderId: String,
     val status: PaymentStatus,
     val extraDetails: PaymentExtraDetails? = null,
-    val failure: PaymentExecutionFailure? = null,
+    val failure: PaymentFailure? = null,
 ) {
     init {
         require(status == PaymentStatus.SUCCESS || status == PaymentStatus.FAILURE || status == PaymentStatus.UNKNOWN) {

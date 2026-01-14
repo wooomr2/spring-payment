@@ -14,7 +14,6 @@ import woo.paymentservice.payment.application.port.`in`.CheckoutUseCase
 @Controller
 class CheckoutController(
     private val checkoutUseCase: CheckoutUseCase,
-    useCase: CheckoutUseCase
 ) {
 
     @GetMapping("/")
