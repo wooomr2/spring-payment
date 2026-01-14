@@ -1,4 +1,4 @@
-package woo.paymentservice.payment.test
+package woo.paymentservice.payment.helper
 
 import org.springframework.boot.test.context.TestConfiguration
 import org.springframework.r2dbc.core.DatabaseClient

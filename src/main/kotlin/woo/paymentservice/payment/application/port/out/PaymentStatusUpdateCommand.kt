@@ -1,5 +1,6 @@
 package woo.paymentservice.payment.application.port.out
 
+import woo.paymentservice.payment.domain.PaymentExecutionResult
 import woo.paymentservice.payment.domain.PaymentExtraDetails
 import woo.paymentservice.payment.domain.PaymentFailure
 import woo.paymentservice.payment.domain.PaymentStatus
@@ -11,6 +12,14 @@ data class PaymentStatusUpdateCommand(
     val extraDetails: PaymentExtraDetails? = null,
     val failure: PaymentFailure? = null,
 ) {
+    constructor(paymentExecutionResult: PaymentExecutionResult) : this(
+        paymentKey = paymentExecutionResult.paymentKey,
+        orderId = paymentExecutionResult.orderId,
+        status = paymentExecutionResult.paymentStatus(),
+        extraDetails = paymentExecutionResult.extraDetails,
+        failure = paymentExecutionResult.failure,
+    )
+
     init {
         require(status == PaymentStatus.SUCCESS || status == PaymentStatus.FAILURE || status == PaymentStatus.UNKNOWN) {
             "결제상태 (status: $status)는 올바르지 않은 결제 상태입니다. 허용되는 상태는 SUCCESS, FAILURE, UNKNWON 입니다."

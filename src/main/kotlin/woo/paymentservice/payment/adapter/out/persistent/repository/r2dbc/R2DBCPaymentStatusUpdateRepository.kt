@@ -53,6 +53,7 @@ class R2DBCPaymentStatusUpdateRepository(
             .bind("method", extraDetails.method.name)
             .bind("approvedAt", extraDetails.approvedAt.toString())
             .bind("type", extraDetails.type)
+            .bind("pspRawData", extraDetails.pspRawData)
             .bind("orderId", command.orderId)
             .fetch()
             .rowsUpdated()
@@ -70,7 +71,7 @@ class R2DBCPaymentStatusUpdateRepository(
     private fun updatePaymentStatusToUnKnown(command: PaymentStatusUpdateCommand): Mono<Boolean> {
         return selectPaymentOrderStatus(command.orderId)
             .collectList()
-            .flatMap { insertPaymentHistory(it, command.status, "UNKNOWN") }
+            .flatMap { insertPaymentHistory(it, command.status, command.failure.toString()) }
             .flatMap { updatePaymentStatus(command.orderId, command.status) }
             .flatMap { incrementPaymeentOrderFailCount(command) }
             .`as`(transactionalOperator::transactional)
@@ -192,6 +193,7 @@ class R2DBCPaymentStatusUpdateRepository(
             method = :method,
             approved_at = :approvedAt,
             type = :type,
+            psp_raw_data = :pspRawData,
             updated_at = CURRENT_TIMESTAMP
             WHERE order_id = :orderId
         """.trimIndent()

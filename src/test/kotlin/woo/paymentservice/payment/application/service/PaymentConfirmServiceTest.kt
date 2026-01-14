@@ -18,9 +18,9 @@ import woo.paymentservice.payment.application.port.`in`.PaymentConfirmCommand
 import woo.paymentservice.payment.application.port.out.PaymentExecutorPort
 import woo.paymentservice.payment.application.port.out.PaymentStatusUpdatePort
 import woo.paymentservice.payment.application.port.out.PaymentValidationPort
+import woo.paymentservice.payment.config.PaymentTestConfig
 import woo.paymentservice.payment.domain.*
-import woo.paymentservice.payment.test.PaymentDatabaseHelper
-import woo.paymentservice.payment.test.PaymentTestConfig
+import woo.paymentservice.payment.helper.PaymentDatabaseHelper
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 import java.util.*
@@ -33,6 +33,7 @@ class PaymentConfirmServiceTest(
     @Autowired private val paymentStatusUpdatePort: PaymentStatusUpdatePort,
     @Autowired private val paymentValidationPort: PaymentValidationPort,
     @Autowired private val paymentDatabaseHelper: PaymentDatabaseHelper,
+    @Autowired private val paymentErrorHandler: PaymentErrorHandler
 ) {
 
     private val mockPaymentExecutorPort = mockk<PaymentExecutorPort>()
@@ -87,7 +88,12 @@ class PaymentConfirmServiceTest(
 
         // 3. confirm
         val paymentConfirmService =
-            PaymentConfirmService(paymentStatusUpdatePort, paymentValidationPort, mockPaymentExecutorPort)
+            PaymentConfirmService(
+                paymentStatusUpdatePort,
+                paymentValidationPort,
+                mockPaymentExecutorPort,
+                paymentErrorHandler
+            )
 
         val paymentConfirmResult = paymentConfirmService.confirm(paymentConfirmCommand).block()!!
 
@@ -153,7 +159,12 @@ class PaymentConfirmServiceTest(
 
         // 3. confirm
         val paymentConfirmService =
-            PaymentConfirmService(paymentStatusUpdatePort, paymentValidationPort, mockPaymentExecutorPort)
+            PaymentConfirmService(
+                paymentStatusUpdatePort,
+                paymentValidationPort,
+                mockPaymentExecutorPort,
+                paymentErrorHandler
+            )
 
         val paymentConfirmResult = paymentConfirmService.confirm(paymentConfirmCommand).block()!!
 
@@ -198,7 +209,12 @@ class PaymentConfirmServiceTest(
 
         // 3. confirm
         val paymentConfirmService =
-            PaymentConfirmService(paymentStatusUpdatePort, paymentValidationPort, mockPaymentExecutorPort)
+            PaymentConfirmService(
+                paymentStatusUpdatePort,
+                paymentValidationPort,
+                mockPaymentExecutorPort,
+                paymentErrorHandler
+            )
 
         val paymentConfirmResult = paymentConfirmService.confirm(paymentConfirmCommand).block()!!
 
@@ -241,7 +257,12 @@ class PaymentConfirmServiceTest(
         every { mockPaymentExecutorPort.execute(paymentConfirmCommand) } returns Mono.error(pspConfirmException)
 
         val paymentConfirmService =
-            PaymentConfirmService(paymentStatusUpdatePort, paymentValidationPort, mockPaymentExecutorPort)
+            PaymentConfirmService(
+                paymentStatusUpdatePort,
+                paymentValidationPort,
+                mockPaymentExecutorPort,
+                paymentErrorHandler
+            )
 
         val paymentConfirmResult = paymentConfirmService.confirm(paymentConfirmCommand).block()!!
 
@@ -279,7 +300,12 @@ class PaymentConfirmServiceTest(
         )
 
         val paymentConfirmService =
-            PaymentConfirmService(paymentStatusUpdatePort, mockPaymentValidationPort, mockPaymentExecutorPort)
+            PaymentConfirmService(
+                paymentStatusUpdatePort,
+                mockPaymentValidationPort,
+                mockPaymentExecutorPort,
+                paymentErrorHandler
+            )
 
 
         val paymentConfirmResult = paymentConfirmService.confirm(paymentConfirmCommand).block()!!

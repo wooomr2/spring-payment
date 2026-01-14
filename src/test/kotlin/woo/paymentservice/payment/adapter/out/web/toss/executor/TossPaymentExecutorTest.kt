@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Import
 import woo.paymentservice.payment.adapter.out.web.toss.exception.EnumTossPaymentConfirmError
 import woo.paymentservice.payment.adapter.out.web.toss.exception.PSPConfirmationException
 import woo.paymentservice.payment.application.port.`in`.PaymentConfirmCommand
-import woo.paymentservice.payment.test.PSPTestWebClientConfig
+import woo.paymentservice.payment.config.PSPTestWebClientConfig
 import java.util.*
 
 /**

@@ -1,4 +1,4 @@
-package woo.paymentservice.payment.test
+package woo.paymentservice.payment.config
 
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.TestConfiguration

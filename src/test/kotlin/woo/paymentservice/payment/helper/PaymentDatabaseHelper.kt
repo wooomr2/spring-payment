@@ -1,4 +1,4 @@
-package woo.paymentservice.payment.test
+package woo.paymentservice.payment.helper
 
 import reactor.core.publisher.Mono
 import woo.paymentservice.payment.domain.PaymentEvent

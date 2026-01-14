@@ -13,8 +13,8 @@ import org.springframework.dao.DataIntegrityViolationException
 import reactor.test.StepVerifier
 import woo.paymentservice.payment.application.port.`in`.CheckoutCommand
 import woo.paymentservice.payment.application.port.`in`.CheckoutUseCase
-import woo.paymentservice.payment.test.PaymentDatabaseHelper
-import woo.paymentservice.payment.test.PaymentTestConfig
+import woo.paymentservice.payment.helper.PaymentDatabaseHelper
+import woo.paymentservice.payment.config.PaymentTestConfig
 import java.util.*
 
 @SpringBootTest
