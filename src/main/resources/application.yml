@@ -7,6 +7,37 @@ spring:
   thymeleaf:
     cache: false
 
+  cloud:
+    stream:
+      kafka:
+        binder:
+          brokers: "bootstrap.servers data 입력"
+          configuration:
+            security:
+              protocol: SASL_SSL
+            sasl:
+              mechanism: PLAIN
+              jaas:
+                config: "sasl.jaas.config data 입력"
+            client:
+              dns:
+                lookup: use_all_dns_ips
+
+          required-acks: all
+          auto-create-topics: false
+
+      bindings:
+        consume-in-0:
+          destination: payment
+          group: payment-service
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: bindings
+
+
 logging:
   level:
     org:
@@ -14,6 +45,7 @@ logging:
         web: DEBUG
         r2dbc: DEBUG
         transaction: DEBUG
+
 
 PSP:
   toss:
