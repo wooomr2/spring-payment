@@ -32,7 +32,7 @@ data class TossPaymentConfirmResponse(
     val mobilePhone: MobilePhone?,
     val giftCertificate: GiftCertificate?,
     val transfer: Transfer?,
-    val metadata: Object?,
+    val metadata: Any?,
     val receipt: Receipt?,
     val checkout: Checkout?,
     val easyPay: EasyPay?,

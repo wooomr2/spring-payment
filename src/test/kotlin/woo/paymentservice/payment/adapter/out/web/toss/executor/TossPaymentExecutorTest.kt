@@ -1,6 +1,7 @@
 package woo.paymentservice.payment.adapter.out.web.toss.executor
 
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
@@ -17,7 +18,7 @@ import java.util.*
  * */
 @SpringBootTest
 @Import(PSPTestWebClientConfig::class)
-//@Tag("TooLongToRun")
+@Tag("TooLongToRun")
 class TossPaymentExecutorTest(
     @Autowired private val pspTestWebClientConfig: PSPTestWebClientConfig
 ) {

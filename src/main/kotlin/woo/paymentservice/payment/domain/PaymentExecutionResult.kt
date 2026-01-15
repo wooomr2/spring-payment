@@ -1,7 +1,5 @@
 package woo.paymentservice.payment.domain
 
-import java.time.LocalDateTime
-
 data class PaymentExecutionResult(
     val paymentKey: String,
     val orderId: String,

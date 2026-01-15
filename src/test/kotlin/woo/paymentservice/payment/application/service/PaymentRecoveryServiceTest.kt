@@ -61,7 +61,7 @@ class PaymentRecoveryServiceTest(
     @Test
     fun `should fail to recovery when an unknown exception occurs`() {
         val paymentConfirmCommand = createUnknownStatusPaymentEvent()
-        val paymentExecutionResult = createPaymentExecutionResult(paymentConfirmCommand)
+        createPaymentExecutionResult(paymentConfirmCommand)
 
         val mockPaymentExecutorPort = mockk<PaymentExecutorPort>()
 

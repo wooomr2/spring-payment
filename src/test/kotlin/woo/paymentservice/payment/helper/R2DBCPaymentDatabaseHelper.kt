@@ -28,7 +28,7 @@ class R2DBCPaymentDatabaseHelper(
                         orderId = results.first()["order_id"] as String,
                         orderName = results.first()["order_name"] as String,
                         buyerId = results.first()["buyer_id"] as Long,
-                        paymentKey = results.first()["payment_key"] as String,
+                        paymentKey = results.first()["payment_key"] as? String,
                         paymentType = results.first()["type"]?.let { PaymentType.get(it as String) },
                         paymentMethod = results.first()["method"]?.let { PaymentMethod.get(it as String) },
                         approvedAt = results.first()["approved_at"] as? LocalDateTime,

@@ -83,7 +83,7 @@ class TossPaymentExecutor(
                             """.trimIndent()
                         )
                     }
-                    .onRetryExhaustedThrow { spec, retrySignal -> retrySignal.failure() }
+                    .onRetryExhaustedThrow { _, retrySignal -> retrySignal.failure() }
             )
     }
 }

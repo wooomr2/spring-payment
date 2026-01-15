@@ -98,17 +98,16 @@ class PaymentConfirmServiceTest(
         val paymentConfirmResult = paymentConfirmService.confirm(paymentConfirmCommand).block()!!
 
         val paymentEvent: PaymentEvent = paymentDatabaseHelper.getPayments(orderId)!!
+        val extraDetails = paymentExecutionResult.extraDetails!!
 
         // then
         assertThat(paymentConfirmResult.status).isEqualTo(PaymentStatus.SUCCESS)
         assertTrue(paymentEvent.isSuccess())
-        assertThat(paymentEvent.paymentType).isEqualTo(paymentExecutionResult.extraDetails!!.type)
-        assertThat(paymentEvent.paymentMethod).isEqualTo(paymentExecutionResult.extraDetails.method)
-        assertThat(paymentEvent.orderName).isEqualTo(paymentExecutionResult.extraDetails.orderName)
+        assertThat(paymentEvent.paymentType).isEqualTo(extraDetails.type)
+        assertThat(paymentEvent.paymentMethod).isEqualTo(extraDetails.method)
+        assertThat(paymentEvent.orderName).isEqualTo(extraDetails.orderName)
         assertThat(paymentEvent.approvedAt!!.truncatedTo(ChronoUnit.MINUTES)).isEqualTo(
-            paymentExecutionResult.extraDetails.approvedAt.truncatedTo(
-                ChronoUnit.MINUTES
-            )
+            extraDetails.approvedAt.truncatedTo(ChronoUnit.MINUTES)
         )
     }
 
