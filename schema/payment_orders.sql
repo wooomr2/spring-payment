@@ -12,7 +12,7 @@ CREATE TABLE payment_orders
     fail_count           TINYINT        NOT NULL DEFAULT 0,
     threshold            TINYINT        NOT NULL DEFAULT 5,
     created_at           DATETIME       NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at           DATETIME       NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at           DATETIME       NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 
     FOREIGN KEY (payment_event_id) REFERENCES payment_events (id)
 );
