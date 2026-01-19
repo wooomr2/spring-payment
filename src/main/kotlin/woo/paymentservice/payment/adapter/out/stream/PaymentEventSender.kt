@@ -44,7 +44,7 @@ class PaymentEventSender(
         }
     }
 
-    @Bean
+    @Bean(name = ["payment-result"])
     fun sendResultChannel(): FluxMessageChannel {
         return FluxMessageChannel()
     }
@@ -80,12 +80,12 @@ class PaymentEventSender(
             }
             .onErrorContinue { err, _ ->
                 Logger.error(
-                    "sendEventMessage",
+                    "handleSendResult",
                     err.message ?: "failed to mark the outbox message",
                     err
                 )
             }
-            .subscribeOn(Schedulers.newSingle("handle-send-result-event-message"))
+            .subscribeOn(Schedulers.boundedElastic())
             .subscribe()
     }
 
