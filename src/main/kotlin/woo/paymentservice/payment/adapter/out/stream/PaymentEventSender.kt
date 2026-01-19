@@ -18,6 +18,7 @@ import reactor.kafka.sender.SenderResult
 import woo.paymentservice.common.annotation.StreamAdapter
 import woo.paymentservice.common.util.Logger
 import woo.paymentservice.payment.adapter.out.persistent.repository.PaymentOutboxRepository
+import woo.paymentservice.payment.application.port.out.DispatchEventMessagePort
 import woo.paymentservice.payment.application.stream.PaymentEventMessage
 import woo.paymentservice.payment.application.stream.PaymentEventMessageType
 import java.util.function.Supplier
@@ -29,7 +30,7 @@ import java.util.function.Supplier
 @Configuration
 class PaymentEventSender(
     private val paymentOutboxRepository: PaymentOutboxRepository
-) {
+) : DispatchEventMessagePort {
 
     private val sender = Sinks.many().unicast().onBackpressureBuffer<Message<PaymentEventMessage>>()
     private val sendResult = Sinks.many().unicast().onBackpressureBuffer<SenderResult<String>>()
@@ -94,7 +95,7 @@ class PaymentEventSender(
         sender.emitNext(createEventMessage(paymentEventMessage), Sinks.EmitFailureHandler.FAIL_FAST)
     }
 
-    fun dispatch(paymentEventMessage: PaymentEventMessage) {
+    override fun dispatch(paymentEventMessage: PaymentEventMessage) {
         sender.emitNext(createEventMessage(paymentEventMessage), Sinks.EmitFailureHandler.FAIL_FAST)
     }
 

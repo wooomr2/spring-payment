@@ -5,6 +5,7 @@ import io.mockk.mockk
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Tag
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.context.annotation.Import
@@ -312,5 +313,61 @@ class PaymentConfirmServiceTest(
 
         assertThat(paymentConfirmResult.status).isEqualTo(PaymentStatus.FAILURE)
         assertTrue(paymentEvent.isFailure())
+    }
+
+    @Test
+    @Tag("ExternalIntegration")
+    fun `should send the event message to the external message system after the payment confirmation`() {
+        val orderId = UUID.randomUUID().toString()
+
+        val checkoutCommand = CheckoutCommand(
+            cartId = 1,
+            buyerId = 1,
+            productIds = listOf(1, 2, 3),
+            idempotencyKey = orderId
+        )
+
+        // 1. checkout
+        val checkoutResult: CheckoutResult = checkoutUseCase.checkout(checkoutCommand).block()!!
+
+        val paymentConfirmCommand = PaymentConfirmCommand(
+            paymentKey = UUID.randomUUID().toString(),
+            orderId = checkoutResult.orderId,
+            amount = checkoutResult.amount
+        )
+
+        val paymentExecutionResult = PaymentExecutionResult(
+            paymentKey = paymentConfirmCommand.paymentKey,
+            orderId = paymentConfirmCommand.orderId,
+            extraDetails = PaymentExtraDetails(
+                type = PaymentType.NORMAL,
+                method = PaymentMethod.EASY_PAY,
+                approvedAt = LocalDateTime.now(),
+                orderName = "test_order_name",
+                totalAmount = paymentConfirmCommand.amount,
+                pspConfirmationStatus = PSPConfirmationStatus.DONE,
+                pspRawData = "{}"
+            ),
+            isSuccess = true,
+            isFailure = false,
+            isUnknown = false,
+            isRetryable = false
+        )
+
+        // 2. mock PaymentExecutorPort.execute
+        every { mockPaymentExecutorPort.execute(paymentConfirmCommand) } returns Mono.just(paymentExecutionResult)
+
+        // 3. confirm
+        val paymentConfirmService =
+            PaymentConfirmService(
+                paymentStatusUpdatePort,
+                paymentValidationPort,
+                mockPaymentExecutorPort,
+                paymentErrorHandler
+            )
+
+        paymentConfirmService.confirm(paymentConfirmCommand).block()!!
+
+        Thread.sleep(1000)
     }
 }

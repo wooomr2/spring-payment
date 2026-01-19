@@ -7,6 +7,7 @@ import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.bodyToMono
 import reactor.core.publisher.Mono
 import reactor.util.retry.Retry
+import woo.paymentservice.common.util.objectMapper
 import woo.paymentservice.payment.adapter.out.web.toss.exception.EnumTossPaymentConfirmError
 import woo.paymentservice.payment.adapter.out.web.toss.exception.PSPConfirmationException
 import woo.paymentservice.payment.adapter.out.web.toss.response.TossPaymentConfirmResponse
@@ -60,7 +61,7 @@ class TossPaymentExecutor(
                         orderName = it.orderName,
                         totalAmount = it.totalAmount,
                         pspConfirmationStatus = PSPConfirmationStatus.get(it.status),
-                        pspRawData = it.toString()
+                        pspRawData = objectMapper.writeValueAsString(it)
                     ),
                     isSuccess = true,
                     isFailure = false,

@@ -7,7 +7,7 @@ CREATE TABLE payment_order_histories
     created_at       DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at       DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     changed_by       VARCHAR(255),
-    reason           VARCHAR(255),
+    reason           VARCHAR(2000),
 
     FOREIGN KEY (payment_order_id) REFERENCES payment_orders (id)
 );
