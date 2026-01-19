@@ -6,15 +6,19 @@ import org.springframework.transaction.reactive.TransactionalOperator
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import woo.paymentservice.payment.adapter.out.persistent.exception.PaymentAlreadyProcessedException
+import woo.paymentservice.payment.adapter.out.persistent.repository.PaymentOutboxRepository
 import woo.paymentservice.payment.adapter.out.persistent.repository.PaymentStatusUpdateRepository
 import woo.paymentservice.payment.application.port.out.PaymentStatusUpdateCommand
+import woo.paymentservice.payment.application.stream.PaymentEventPublisher
 import woo.paymentservice.payment.domain.PaymentExtraDetails
 import woo.paymentservice.payment.domain.PaymentStatus
 
 @Repository
 class R2DBCPaymentStatusUpdateRepository(
     private val databaseClient: DatabaseClient,
-    private val transactionalOperator: TransactionalOperator
+    private val transactionalOperator: TransactionalOperator,
+    private val paymentOutboxRepository: PaymentOutboxRepository,
+    private val paymentEventPublisher: PaymentEventPublisher
 ) : PaymentStatusUpdateRepository {
 
     override fun updatePaymentStatusToExecuting(orderId: String, paymentKey: String): Mono<Boolean> {
@@ -41,6 +45,8 @@ class R2DBCPaymentStatusUpdateRepository(
             .flatMap { insertPaymentHistory(it, command.status, "PAYMENT_CONFIRMATION_DONE") }
             .flatMap { updatePaymentStatus(command.orderId, command.status) }
             .flatMap { updatePaymentEventExtraDetails(command) }
+            .flatMap { paymentOutboxRepository.insertOutbox(command) }
+            .flatMap { paymentEventPublisher.publishEvent(it) }
             .`as`(transactionalOperator::transactional)
             .thenReturn(true)
     }
