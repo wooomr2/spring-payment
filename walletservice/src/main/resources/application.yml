@@ -1,0 +1,54 @@
+server:
+  port: 8081
+
+spring:
+  jpa:
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+    open-in-view: false
+  datasource:
+    hikari:
+      jdbc-url: jdbc:mysql://localhost:3306/test
+      username: root
+      password: 123456
+      driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/test
+
+
+  cloud:
+    stream:
+      kafka:
+        binder:
+          brokers: "입력"
+          configuration:
+            security:
+              protocol: SASL_SSL
+            sasl:
+              mechanism: PLAIN
+              jaas:
+                config: "입력"
+            client:
+              dns:
+                lookup: use_all_dns_ips
+          required-acks: all
+          auto-create-topics: false
+
+      bindings:
+        consume-in-0:
+          destination: payment
+          group: wallet-service
+
+
+logging:
+  level:
+    org:
+      springframework:
+        transaction: DEBUG
+        orm:
+          jpa: DEBUG
+        kafka: trace
