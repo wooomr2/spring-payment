@@ -1,0 +1,27 @@
+package woo.paymentservice.payment.domain
+
+data class PaymentExecutionResult(
+    val paymentKey: String,
+    val orderId: String,
+    val extraDetails: PaymentExtraDetails? = null,
+    val failure: PaymentFailure? = null,
+    val isSuccess: Boolean,
+    val isFailure: Boolean,
+    val isUnknown: Boolean,
+    val isRetryable: Boolean,
+) {
+    fun paymentStatus(): PaymentStatus {
+        return when {
+            isSuccess -> PaymentStatus.SUCCESS
+            isFailure -> PaymentStatus.FAILURE
+            isUnknown -> PaymentStatus.UNKNOWN
+            else -> error("결제 (orderId: $orderId)는 올바르지 않은 결제상태입니다.")
+        }
+    }
+
+    init {
+        require(listOf(isSuccess, isFailure, isUnknown).count { it } == 1) {
+            "결제 (orderId: $orderId)는 올바르지 않은 결제상태입니다."
+        }
+    }
+}

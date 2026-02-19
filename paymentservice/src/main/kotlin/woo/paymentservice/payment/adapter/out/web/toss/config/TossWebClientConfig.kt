@@ -1,0 +1,45 @@
+package woo.paymentservice.payment.adapter.out.web.toss.config
+
+import io.netty.handler.timeout.ReadTimeoutHandler
+import org.springframework.beans.factory.annotation.Value
+import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Configuration
+import org.springframework.http.HttpHeaders
+import org.springframework.http.MediaType
+import org.springframework.http.client.reactive.ClientHttpConnector
+import org.springframework.http.client.reactive.ReactorClientHttpConnector
+import org.springframework.web.reactive.function.client.WebClient
+import reactor.netty.http.client.HttpClient
+import reactor.netty.resources.ConnectionProvider
+import java.util.*
+import java.util.concurrent.TimeUnit
+
+@Configuration
+class TossWebClientConfig(
+    @Value("\${PSP.toss.url}") private val baseUrl: String,
+    @Value("\${PSP.toss.secretKey}") private val secretKey: String
+) {
+
+    @Bean
+    fun tossPaymetnWebClient(): WebClient {
+        val encodedSecretKey = Base64.getEncoder().encodeToString(("$secretKey:").toByteArray())
+
+        return WebClient.builder()
+            .baseUrl(baseUrl)
+            .defaultHeader(HttpHeaders.AUTHORIZATION, "Basic $encodedSecretKey")
+            .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+            .clientConnector(reactorClientHttpConnector())
+            .codecs { it.defaultCodecs() }
+            .build()
+    }
+
+    private fun reactorClientHttpConnector(): ClientHttpConnector {
+        // Reactor Netty는 기본 global pool을 쓰기 떄문에 다른 서비스와 커넥션 공유. 전용 Connection Pool 생성
+        val provider = ConnectionProvider.builder("toss-payment").build()
+
+        val clientBase = HttpClient.create(provider)
+            .doOnConnected { it.addHandlerLast(ReadTimeoutHandler(30, TimeUnit.SECONDS)) }
+
+        return ReactorClientHttpConnector(clientBase)
+    }
+}
