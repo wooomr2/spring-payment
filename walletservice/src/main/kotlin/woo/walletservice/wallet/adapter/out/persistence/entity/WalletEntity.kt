@@ -5,7 +5,7 @@ import java.math.BigDecimal
 
 @Entity
 @Table(name = "wallets")
-class WalletEntity(
+data class WalletEntity(
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,4 +18,9 @@ class WalletEntity(
 
     @Version
     val version: Int
-)
+) {
+
+    fun addBalance(amount: BigDecimal): WalletEntity {
+        return copy(balance = balance + amount)
+    }
+}
